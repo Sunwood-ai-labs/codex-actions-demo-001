@@ -21,6 +21,30 @@ jobs:
       
       - name: Install OpenAI Codex
         run: npm install -g @openai/codex
+      
+      - name: Post Initial Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 処理開始メッセージと折りたたみセクションでコード表示
+          gh issue comment ${{ github.event.issue.number }} --body '処理を開始します...
+
+          <details>
+          <summary>Codexへの指示内容</summary>
+
+          ```
+          以下のissueに対する対応計画を立て、ghコマンドでコメントしてください：
+          
+          Issue番号: #${{ github.event.issue.number }}
+          タイトル: ${{ github.event.issue.title }}
+          内容: ${{ github.event.issue.body }}
+          
+          実行してください：
+          1. issueを分析して対応方針を決定
+          2. ghコマンドで計画をissueにコメント (例: gh issue comment #番号 --body '"'"'内容'"'"')
+          3. 必要なコード修正やドキュメント更新を実施
+          ```
+          </details>'
         
       - name: Analyze and Plan
         env:
@@ -38,6 +62,25 @@ jobs:
           1. issueを分析して対応方針を決定
           2. ghコマンドで計画をissueにコメント (例: gh issue comment #番号 --body '内容')
           3. 必要なコード修正やドキュメント更新を実施"
+      
+      - name: Post PR Instructions Comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # PR作成指示を折りたたみセクションでコメント
+          gh issue comment ${{ github.event.issue.number }} --body '<details>
+          <summary>PRの作成指示内容</summary>
+
+          ```
+          以下のghコマンドを使ってプルリクエストを作成してください：
+          
+          1. 新しいブランチにpush: git push origin HEAD:fix-issue-${{ github.event.issue.number }}
+          2. ghコマンドでPR作成: gh pr create --title '"'"'タイトル'"'"' --body '"'"'本文'"'"' --base main --head fix-issue-${{ github.event.issue.number }}
+          3. PRの本文にはissue番号を含めて: Fixes #${{ github.event.issue.number }}
+          
+          issueに対する進捗報告もghコマンドでコメントしてください。
+          ```
+          </details>'
       
       - name: Commit changes
         run: |
