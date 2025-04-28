@@ -35,7 +35,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Codexに応答を生成させ、ghコマンドで直接コメントさせる
-          codex -a auto-edit --quiet "以下のissueまたはコメントに対して適切な返信を作成し、ghコマンドを使ってコメントしてください：
+          codex --full-auto --quiet "以下のissueまたはコメントに対して適切な返信を作成し、ghコマンドを使ってコメントしてください：
           
           イベントタイプ: ${{ github.event_name }}
           アクション: ${{ github.event.action }}
