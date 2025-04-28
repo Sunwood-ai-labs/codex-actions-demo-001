@@ -28,7 +28,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Codexに計画を立てさせ、issueにコメントさせる
-          codex -a auto-edit "以下のissueに対する対応計画を立て、ghコマンドでコメントしてください：
+          codex -a auto-edit  --quiet  "以下のissueに対する対応計画を立て、ghコマンドでコメントしてください：
           
           Issue番号: #${{ github.event.issue.number }}
           タイトル: ${{ github.event.issue.title }}
@@ -52,7 +52,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           # Codexにプルリクエストを作成させる
-          codex -a auto-edit "以下のghコマンドを使ってプルリクエストを作成してください：
+          codex -a auto-edit  --quiet  "以下のghコマンドを使ってプルリクエストを作成してください：
           
           1. 新しいブランチにpush: git push origin HEAD:fix-issue-${{ github.event.issue.number }}
           2. ghコマンドでPR作成: gh pr create --title 'タイトル' --body '本文' --base main --head fix-issue-${{ github.event.issue.number }}
