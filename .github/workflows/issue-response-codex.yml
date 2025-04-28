@@ -29,14 +29,13 @@ jobs:
           && sudo apt update \
           && sudo apt install gh -y
       
-      - name: Generate response with Codex
-        id: generate_response
+      - name: Generate and post response with Codex
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          # Codexに応答を生成させる
-          RESPONSE=$(codex -a auto-edit --quiet "以下のissueまたはコメントに対して適切な返信を作成してください：
+          # Codexに応答を生成させ、ghコマンドで直接コメントさせる
+          codex -a auto-edit --quiet "以下のissueまたはコメントに対して適切な返信を作成し、ghコマンドを使ってコメントしてください：
           
           イベントタイプ: ${{ github.event_name }}
           アクション: ${{ github.event.action }}
@@ -48,16 +47,6 @@ jobs:
           コメント内容: ${{ github.event.comment.body }}
           コメント投稿者: ${{ github.event.comment.user.login }}
           
-          以下のようなシンプルで丁寧な応答を生成してください。")
+          以下の形式でghコマンドを実行して、シンプルで丁寧な応答をコメントしてください：
           
-          # 改行をエスケープして環境変数に保存
-          echo "response<<EOF" >> $GITHUB_ENV
-          echo "$RESPONSE" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
-      
-      - name: Post response comment
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Codexが生成した応答をコメントとして投稿
-          gh issue comment ${{ github.event.issue.number }} --body "${{ env.response }}"
+          gh issue comment ${{ github.event.issue.number }} --body '応答内容をここに書いてください'"
