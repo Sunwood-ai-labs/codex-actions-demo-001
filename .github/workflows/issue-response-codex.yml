@@ -72,42 +72,36 @@ jobs:
           2. ghコマンドで計画をissueにコメント (例: gh issue comment #番号 --body '内容')
           3. 必要なコード修正やドキュメント更新を実施"
       
-      - name: Post PR Instructions Comment
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # PR作成指示を折りたたみセクションでコメント
-          gh issue comment ${{ github.event.issue.number }} --body '<details>
-          <summary>PRの作成指示内容</summary>
-
-          ```
-          以下のghコマンドを使ってプルリクエストを作成してください：
-          
-          1. 新しいブランチにpush: git push origin HEAD:fix-issue-${{ github.event.issue.number }}
-          2. ghコマンドでPR作成: gh pr create --title '"'"'タイトル'"'"' --body '"'"'本文'"'"' --base main --head fix-issue-${{ github.event.issue.number }}
-          3. PRの本文にはissue番号を含めて: Fixes #${{ github.event.issue.number }}
-          
-          issueに対する進捗報告もghコマンドでコメントしてください。
-          ```
-          </details>'
-      
-      - name: Commit changes
-        run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
-          git add .
-          git commit -m "Auto: Issue #${{ github.event.issue.number }} の対応" || echo "No changes to commit"
-          
       - name: Create PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
+          # タイムスタンプを生成 (YYYYMMDDHHmmss形式)
+          TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+          BRANCH_NAME="fix-issue-${{ github.event.issue.number }}-$TIMESTAMP"
+          
+          # 現在の状態を確認
+          git status
+          
+          # 新しいブランチを作成
+          git checkout -b $BRANCH_NAME
+          
+          # ブランチ切り替え後の状態を確認
+          git status
+          
+          # ファイル変更やコミットを行う（Codexが対応する）
+          
+          # 変更後の状態を確認
+          git status
+          
           # Codexにプルリクエストを作成させる
-          codex --full-auto  --quiet  "以下のghコマンドを使ってプルリクエストを作成してください：
+          codex --full-auto --quiet "以下のghコマンドを使ってプルリクエストを作成してください：
           
-          1. 新しいブランチにpush: git push origin HEAD:fix-issue-${{ github.event.issue.number }}
-          2. ghコマンドでPR作成: gh pr create --title 'タイトル' --body '本文' --base main --head fix-issue-${{ github.event.issue.number }}
-          3. PRの本文にはissue番号を含めて: Fixes #${{ github.event.issue.number }}
-          
-          issueに対する進捗報告もghコマンドでコメントしてください。"
+          1. 変更状態を確認: git status
+          2. 変更をコミット: git commit -am 'fix: Issue #${{ github.event.issue.number }} の修正'
+          3. コミット後の状態確認: git status
+          4. 新しいブランチにpush: git push origin HEAD:$BRANCH_NAME
+          5. ghコマンドでPR作成: gh pr create --title 'Issue #${{ github.event.issue.number }} の修正' --body '本文\n\nFixes #${{ github.event.issue.number }}' --base main --head $BRANCH_NAME
+          6. issueに進捗報告: gh issue comment ${{ github.event.issue.number }} --body 'PR作成完了しました。レビューをお願いします。PR: $BRANCH_NAME'
+          "
