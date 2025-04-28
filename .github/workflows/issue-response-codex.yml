@@ -71,7 +71,7 @@ jobs:
           1. issueを分析して対応方針を決定
           2. ghコマンドで計画をissueにコメント (例: gh issue comment #番号 --body '内容')
           3. 必要なコード修正やドキュメント更新を実施"
-      
+          
       - name: Create PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,60 +90,35 @@ jobs:
           # ブランチ切り替え後の状態を確認
           git status
           
-          # ファイル変更やコミットを行う（Codexが対応する）
+          # Codexが作成したファイル変更を全て追加
+          git add .
           
-          # 変更後の状態を確認
+          # ステージング後の状態を確認
           git status
           
           # Codexにプルリクエストを作成させる
-          codex --full-auto --quiet $'以下のghコマンドを使ってプルリクエストを作成してください：
+          codex --full-auto --quiet $'以下の手順でプルリクエストを作成してください：
+      
+          # 変更されたファイルをチェック
+          git status
+      
+          # 適切なコミットメッセージで変更をコミット
+          # Issue番号とタイトルを参照し、変更の種類に応じて内容を調整してください
+          git commit -m "🔧 fix: #${{ github.event.issue.number }} ${{ github.event.issue.title }}" -m "🔍 問題: ${{ github.event.issue.body }}" -m "✅ 対応: 必要なファイルを追加・修正しました" -m "Issue: #${{ github.event.issue.number }}"
           
-          1. 変更状態を確認: git status
-          2. 修正内容を確認して、以下のようなコミットメッセージを作成してください:
-             \'🔧 fix(コンポーネント名): #${{ github.event.issue.number }} 問題の簡潔な説明 を修正
-             
-             🔍 問題: Issueから分析した問題の詳細
-             ✅ 対応: 実装した解決策の詳細
-             🧪 テスト: テスト方法または検証方法
-             
-             Issue: #${{ github.event.issue.number }}\'
-             
-             例:
-             \'🔧 fix(auth): #123 ログイン時のセッション切れエラーを修正
-             
-             🔍 問題: 長時間操作がないとセッションが切れるがユーザーに通知されず操作できない状態になっていた
-             ✅ 対応: セッション有効期限切れを検知し、再ログイン画面に自動遷移する処理を追加
-             🧪 テスト: 手動でセッションCookieを削除し、適切に再ログイン画面に遷移することを確認
-             
-             Issue: #123\'
-          3. コミット後の状態確認: git status
-          4. 新しいブランチにpush: git push origin HEAD:$BRANCH_NAME
-          5. PRタイトルとボディを考えて作成してください:
-             - タイトル例: \'✨ 修正カテゴリ: #${{ github.event.issue.number }} 問題の核心と対応策を簡潔に説明\'
-             - 本文例: \'## 🚀 対応内容: 問題と解決策の概要
-             
-             ### 🔍 問題の詳細
-             問題の詳細説明と影響範囲
-             
-             ### 💡 解決方法
-             解決策の技術的詳細と選択理由
-             
-             ### 📝 変更内容
-             - 変更点1 - ファイル名と変更内容
-             - 変更点2 - ファイル名と変更内容
-             
-             ### 🧪 テスト内容
-             - 実施したテスト内容1
-             - 実施したテスト内容2
-             
-             Fixes #${{ github.event.issue.number }}\'
-          6. issueに進捗報告: gh issue comment ${{ github.event.issue.number }} --body \'🎉 PR作成完了しました！
-             
-             👀 レビューをお願いします
-             🔗 PR: [PR URL]
-             
-             ### 📋 対応概要
-             修正した問題の概要と、どのように解決したか
-             
-             ### 📊 変更影響範囲
-             この修正によって影響を受ける機能や画面\''
+          # ブランチをリモートにプッシュ
+          git push origin HEAD:$BRANCH_NAME
+          
+          # PRを作成 - 内容はIssueの内容と変更に合わせて適切に記述してください
+          gh pr create \
+            --title "✨ fix: #${{ github.event.issue.number }} ${{ github.event.issue.title }}" \
+            --body $\'## 🚀 対応内容\n${{ github.event.issue.body }}\n\n### 🔍 問題と解決策\nIssueの内容に基づいて適切な対応を実施しました。\n\n### 📝 変更内容\n- 変更したファイルとその内容の説明\n\n### 🧪 テスト内容\n- 動作確認方法と結果\n\nFixes #${{ github.event.issue.number }}\' \
+            --base main \
+            --head $BRANCH_NAME
+          
+          # PRのURLを取得
+          PR_URL=$(gh pr view --json url -q .url)
+          
+          # Issueにコメント
+          gh issue comment ${{ github.event.issue.number }} --body $\'🎉 PR作成完了しました！\n\n👀 レビューをお願いします\n🔗 PR: \' + PR_URL + $\'\n\n### 📋 対応概要\n${{ github.event.issue.title }}に対応するPRを作成しました。レビューよろしくお願いします！\'
+          '
