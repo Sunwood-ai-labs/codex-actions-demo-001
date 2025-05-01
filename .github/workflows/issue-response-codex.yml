@@ -54,7 +54,35 @@ jobs:
           3. 必要なコード修正やドキュメント更新を実施
           ```
           </details>'
-        
+
+      - name: Debug Information
+        run: |
+          # ここに上記のバッシュスクリプトをすべて貼り付け
+          
+          # 結果をファイルに保存
+          echo "環境情報をissueにコメントします"
+          {
+            echo "## 🔍 デバッグ情報"
+            echo "サンドボックスエラーのデバッグに必要な情報を収集しました："
+            echo "### システム環境"
+            uname -a
+            cat /etc/os-release || lsb_release -a
+            echo "### Node.js & npm 情報"
+            echo "Node.js: $(node -v)"
+            echo "npm: $(npm -v)"
+            echo "### Codex情報"
+            echo "Version: $(codex --version || echo 'バージョン取得失敗')"
+            echo "Path: $(which codex || echo '場所不明')"
+            echo "### サンドボックス関連"
+            if [ -f /proc/1/cgroup ]; then
+              echo "✅ /proc/1/cgroup ファイルは存在します"
+            else
+              echo "❌ /proc/1/cgroup ファイルは存在しません"
+            fi
+          } > debug_info.txt
+          
+          # Issueにコメント
+          gh issue comment ${{ github.event.issue.number }} --body-file debug_info.txt
       - name: Analyze and Plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
