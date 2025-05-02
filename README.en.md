@@ -1,3 +1,4 @@
+
 # <p align="center">
 #   <img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit Logo" width="120"/>
 # </p>
@@ -9,6 +10,8 @@
 #   <img src="https://img.shields.io/badge/Streamlit-1.0-green.svg" alt="Streamlit version">
 # </p>
 
+
+
 ## 📖 Table of Contents
 - [Overview](#overview)
 - [Installation](#installation)
@@ -18,6 +21,7 @@
 
 ## ⭐️ Overview
 This repository provides a simple fortune-telling (omikuji) app built with Streamlit. Enjoy! 🍀
+
 
 ## 💾 Installation
 
