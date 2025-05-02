@@ -1,14 +1,16 @@
- # Omikuji App
+ # 🎉 Omikuji App 🎊
 
- This repository provides a simple fortune-telling (omikuji) app built with Streamlit.
+ ## 💡 Overview
 
- ## Installation
+ 💻 This repository provides a simple Omikuji (fortune-telling) app built with Streamlit. Enjoy! 🍀
+
+ ## 💾 Installation
 
  ```bash
  pip install -r requirements.txt
  ```
 
- ## Run
+ ## 🚀 Run
 
  ```bash
  streamlit run app.py
