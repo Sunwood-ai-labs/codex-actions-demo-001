@@ -1,13 +1,17 @@
-# <p align="center">
-#   <img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit Logo" width="120"/>
-# </p>
+<p align="right">🇬🇧 <a href="README.en.md">English</a></p>
 
-# <h1 align="center">🎉 おみくじアプリ 🎊</h1>
+<p align="right">🇬🇧 <a href="README.en.md">English</a></p>
 
-# <p align="center">
-#   <img src="https://img.shields.io/badge/python-3.8%2B-blue.svg" alt="Python version">
-#   <img src="https://img.shields.io/badge/Streamlit-1.0-green.svg" alt="Streamlit version">
-# </p>
+<p align="center">
+  <img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit Logo" width="120"/>
+</p>
+
+<h1 align="center">🎉 おみくじアプリ 🎊</h1>
+
+<p align="center">
+   <img src="https://img.shields.io/badge/python-3.8%2B-blue.svg" alt="Python version">
+   <img src="https://img.shields.io/badge/Streamlit-1.0-green.svg" alt="Streamlit version">
+</p>
 
 ## 📖 目次
 - [概要](#概要)
