@@ -2,7 +2,7 @@
 
  ## 💡 Overview
 
- 💻 This repository provides a simple Omikuji (fortune-telling) app built with Streamlit. Enjoy! 🍀
+ 💻 This repository provides a simple Omikuji app using Streamlit. Enjoy! 🍀
 
  ## 💾 Installation
 
