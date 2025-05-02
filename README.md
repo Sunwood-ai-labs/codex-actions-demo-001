@@ -1,3 +1,7 @@
+<p align="right">🇬🇧 <a href="README.en.md">English</a></p>
+
+<p align="right">🇬🇧 <a href="README.en.md">English</a></p>
+
 <p align="center">
   <img src="https://streamlit.io/images/brand/streamlit-mark-color.png" alt="Streamlit Logo" width="120"/>
 </p>
