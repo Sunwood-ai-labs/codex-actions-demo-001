@@ -1,3 +1,7 @@
+Historical diagnostic snapshot (not a diagnosis of any current failure).
+The sandbox-error heading below was generated from a fixed template. It does not
+prove that a sandbox error occurred. See .github/WORKFLOW_SECURITY.md.
+
 ## 🔍 デバッグ情報
 <details>
 <summary>詳細情報（クリックして展開）</summary>
@@ -78,8 +82,11 @@ Package info:
     --full-auto                Automatically approve edits and commands when executed in the sandbox
 ```
 
-### 対応策
-1. `--approval=auto` または `--approval=manual` オプションを試す
-2. 最新バージョンに更新: `npm install -g @openai/codex@latest`
-3. 環境変数の設定: `FORCE_DISABLE_SANDBOX=true codex ...`
+### Error handling
+Inspect the actual failing step and exit status before diagnosing an error.
+For authentication failures, verify the configured authentication method, secret
+availability and API access privately; never print credentials or auth files.
+For sandbox failures, stop and repair the supported sandbox environment before
+retrying. Keep sandbox protections enabled.
+No authentication or CLI compatibility fix has been verified by this snapshot.
 </details>

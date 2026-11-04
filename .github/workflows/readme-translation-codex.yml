@@ -1,79 +1,20 @@
-name: README Translation Bot (Codex)
+name: README Translation Bot (Codex) (paused)
 
+# Fail closed until the agent, sandbox and authentication are reviewed.
+# See .github/WORKFLOW_SECURITY.md before restoring automation.
 on:
-  push:
-    paths:
-      - 'README.md'
   workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: {}
 
 jobs:
-  translate-readme:
+  automation-paused:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 1
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
-      - name: Install OpenAI Codex
+      - name: Report paused automation
+        shell: bash
         run: |
-          npm install -g @openai/codex
-        
-      - name: Translate README with Codex
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          CODEX_QUIET_MODE: "1"
-        run: |
-          # READMEを英語に翻訳するためにCodexを使用
-          codex -a auto-edit  --quiet "
-          README.mdを英語に翻訳してください。
-          
-          以下の要件に従って翻訳してください：
-          
-          1. 元のマークダウン形式を維持
-          2. 技術用語は適切な英語で表現
-          3. 絵文字はそのまま維持
-          4. バッジやリンクは変更しない
-          5. コードブロックの内容は翻訳しない
-          
-          翻訳後のファイルは README.en.md として保存してください。
-          その後、以下の作業を行ってください：
-          
-          1. 新しいブランチを作成
-          2. README.en.md をコミット
-          3. プルリクエストを作成
-          4. PRの説明文に翻訳の品質に関する簡単なサマリーを記載
-          
-          重要: GitHubのトークンは環境変数 GITHUB_TOKEN で利用可能です。
-          "
-      
-      - name: Create PR if translation is created
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          CODEX_QUIET_MODE: "1"
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          
-          if [ -f "README.en.md" ]; then
-            BRANCH_NAME="docs/translate-readme-en-$(date +%Y%m%d-%H%M%S)"
-            git checkout -b $BRANCH_NAME
-            git add README.en.md
-            git commit -m "docs: READMEを英語に翻訳"
-            git push origin $BRANCH_NAME
-            
-            gh pr create --title "📄 docs: READMEを英語に翻訳" \
-                         --body "CodexによってREADMEを英語に翻訳しました。" \
-                         --base develop \
-                         --head $BRANCH_NAME
-          fi
+          printf '%s\n' 'ERROR: This automation is paused for security hardening. See .github/WORKFLOW_SECURITY.md. No Codex task was performed.'
+          exit 1
